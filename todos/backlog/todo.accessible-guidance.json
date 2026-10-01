@@ -1,0 +1,102 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.accessible-guidance",
+  "title": "Accessible guidance and fine positioning",
+  "status": "backlog",
+  "boundedContext": "Guidance",
+  "purpose": "Turn routes and shelf observations into clear, interruptible spoken and haptic instructions, including fine positioning at the shelf.",
+  "architecturalScope": "Guidance bounded context. GuidanceGenerator and FinePositioner. Consumes Navigation, Localization and Perception. Styles follow the Wayfindr audio wayfinding standard.",
+  "domainContext": "GuidanceSession aggregate, NavigationInstruction, Distance, Heading, RelativePose. Emits NavigationPaused / NavigationResumed.",
+  "dependencies": ["todo.navigation-routing", "todo.accessibility-platform", "todo.product-recognition"],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Coarse guidance templates",
+      "description": "Deterministic spoken instructions for route steps.",
+      "status": "todo"
+    },
+    {
+      "id": "M2",
+      "title": "Fine positioning dialogue",
+      "description": "Confirmation-based left/right/level guidance at the shelf.",
+      "status": "todo"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Adopt Wayfindr-style phrasing and a guidance template engine",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Templates are data-driven and reviewable by accessibility testers."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T2",
+      "title": "Generate haptic patterns for direction and arrival",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Patterns are distinguishable and documented."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T3",
+      "title": "Implement fine positioning dialog",
+      "status": "todo",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "Horizontal hit rate > 80% on the test shelf.",
+        "Instructions degrade to questions when confidence is low."
+      ],
+      "evidence": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "Every instruction is understandable without any visual cue.",
+    "Long or time-critical instructions can be interrupted immediately.",
+    "Fine positioning never states a distance as fact unless measured."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Speech output conflicts with the screen reader.",
+      "likelihood": 4,
+      "impact": 4,
+      "mitigation": "Explicit screenreader-guided vs app-guided modes with defined interruption rules."
+    },
+    {
+      "id": "R2",
+      "description": "Over-talking overwhelms the user.",
+      "likelihood": 3,
+      "impact": 4,
+      "mitigation": "Prioritised, minimal, incremental instructions."
+    }
+  ],
+  "safetyImplications": [
+    "Guidance must never say 'you can go' or imply a guaranteed clear path."
+  ],
+  "accessibilityImplications": [
+    "Guidance is the primary user-facing output and must be fully non-visual."
+  ],
+  "privacyImplications": [
+    "No guidance transcripts are stored by default."
+  ],
+  "verificationRequirements": [
+    "Manual screen-reader walkthroughs.",
+    "Haptic pattern comprehension test with users."
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-01",
+      "decision": "MVP guidance subset lives in todo.spoken-guidance and todo.guidance-state-machine; this track covers later fine positioning and shelf guidance.",
+      "rationale": "docs/15-mvp-priority.md."
+    }
+  ],
+  "tags": ["guidance", "speech", "haptics", "wayfindr"],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T00:00:00Z"
+}

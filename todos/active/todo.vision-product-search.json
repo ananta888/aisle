@@ -1,0 +1,131 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.vision-product-search",
+  "title": "Vision product search (TargetProductDetector)",
+  "status": "partial",
+  "boundedContext": "VisualSearch",
+  "purpose": "Find the requested TargetProduct in a camera frame and return a structured, confidence-bearing observation with relative position and bounding box.",
+  "architecturalScope": "VisualSearch bounded context. TargetProductDetector port with replaceable adapters (LocalVLM, CloudVLM, ObjectDetector, Hybrid). No training of dedicated detectors required for MVP.",
+  "domainContext": "ProductCandidate, Observation, Confidence, BoundingBox, RelativePosition (horizontal/vertical). VLM output is mapped to these structured types.",
+  "dependencies": [
+    "todo.live-camera-pipeline"
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Port + dummy adapter",
+      "description": "Detector interface defined and testable without a model.",
+      "status": "done"
+    },
+    {
+      "id": "M2",
+      "title": "General-purpose VLM adapter",
+      "description": "A strong general VLM finds the target and reports a bounding box.",
+      "status": "done"
+    },
+    {
+      "id": "M3",
+      "title": "Structured domain mapping",
+      "description": "Free-form model output converts to ProductCandidate reliably.",
+      "status": "done"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Define TargetProductDetector port and ProductCandidate",
+      "status": "done",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Dummy adapter returns deterministic candidates for tests."
+      ],
+      "evidence": [
+        "app/src/ports/target-product-detector.ts",
+        "app/src/adapters/dummy/scripted-detector.ts"
+      ]
+    },
+    {
+      "id": "T2",
+      "title": "Implement LocalVLM/CloudVLM adapter (configurable)",
+      "status": "done",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "Adapter is swappable via configuration.",
+        "Every result carries confidence."
+      ],
+      "evidence": [
+        "app/src/adapters/jev/jev-vision-decision-detector.ts (llama.cpp-vision-decision /v1/decision, Jev mode)",
+        "app/src/adapters/remote/remote-vlm-detector.ts (generic JSON fallback adapter)",
+        "app/tests/jev-vision-decision-detector.test.ts",
+        "app/tests/jev-live.test.ts green against running llama-server :18150 (Bonsai 27B, detected p=0.9998)"
+      ]
+    },
+    {
+      "id": "T3",
+      "title": "Build robust output-to-domain parser",
+      "status": "done",
+      "milestoneId": "M3",
+      "acceptanceCriteria": [
+        "Malformed model output yields an uncertain/no-detection result, never a fabricated one."
+      ],
+      "evidence": [
+        "coerceCandidate in app/src/adapters/remote/remote-vlm-detector.ts",
+        "app/tests/remote-vlm-detector.test.ts"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "Detected candidates always carry confidence and relative position.",
+    "The port can be replaced by detector/embedding/OCR/barcode adapters without domain changes.",
+    "No free-form model text is passed to guidance."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "VLM hallucinates a product or position.",
+      "likelihood": 4,
+      "impact": 5,
+      "mitigation": "Structured output contract, confidence thresholds, no claim below threshold."
+    },
+    {
+      "id": "R2",
+      "description": "Latency/cost of VLM make the loop sluggish.",
+      "likelihood": 4,
+      "impact": 3,
+      "mitigation": "Configurable sampling, cheap preprocessing, temporal tracking."
+    }
+  ],
+  "safetyImplications": [
+    "A detection without sufficient confidence must not be announced as fact (AGENTS.md 19)."
+  ],
+  "accessibilityImplications": [
+    "Detection results feed non-visual guidance; no visual-only output."
+  ],
+  "privacyImplications": [
+    "Cloud VLM is optional, explicit and never required; frames are ephemeral."
+  ],
+  "verificationRequirements": [
+    "Adapter contract tests with malformed responses.",
+    "Detection accuracy evaluation on a labelled product set."
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-01",
+      "decision": "Use a general-purpose VLM as the initial adapter rather than training a per-store detector.",
+      "rationale": "Avoids training a detector for every supermarket product while the port keeps later replacement open."
+    },
+    {
+      "date": "2026-10-01",
+      "decision": "Default vision adapter is JevVisionDecisionDetector against ananta888/llama.cpp-vision-decision /v1/decision (Jev mode: mode=tree, return_probs).",
+      "rationale": "Returns per-field calibrated probabilities and abstain, which feed the safety/confidence model directly; no free text is generated."
+    }
+  ],
+  "tags": [
+    "mvp",
+    "vision",
+    "vlm",
+    "detector"
+  ],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T12:30:00Z"
+}

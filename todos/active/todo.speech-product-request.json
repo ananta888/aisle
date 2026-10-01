@@ -1,0 +1,112 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.speech-product-request",
+  "title": "Spoken product request to TargetProduct",
+  "status": "partial",
+  "boundedContext": "ProductRequest",
+  "purpose": "Turn a spoken product request into a normalized TargetProduct and maintain it for the session. MVP entry point of the closed loop.",
+  "architecturalScope": "ProductRequest bounded context. SpeechInputPort + IntentParser + a lightweight ProductRequestSession aggregate. No catalog, maps or retailer APIs required.",
+  "domainContext": "TargetProduct, ProductRequest, Observation<string>, Confidence. Maintains the current target for VisualSearch and Guidance.",
+  "dependencies": [],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Speech to text (push-to-talk)",
+      "description": "A spoken phrase becomes text locally for short commands.",
+      "status": "done"
+    },
+    {
+      "id": "M2",
+      "title": "Intent and target extraction",
+      "description": "Text 'Ich suche ...' yields a normalized TargetProduct.",
+      "status": "done"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Define SpeechInputPort and TargetProduct value object",
+      "status": "done",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Domain tests run with a dummy speech adapter, no hardware."
+      ],
+      "evidence": [
+        "app/src/domain/target-product.ts",
+        "app/tests/target-product.test.ts"
+      ]
+    },
+    {
+      "id": "T2",
+      "title": "Implement local STT adapter (push-to-talk)",
+      "status": "validation",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Short product phrases recognized offline.",
+        "STT result carries confidence."
+      ],
+      "evidence": [
+        "app/src/adapters/browser/web-speech-input.ts (Web Speech API, browser fallback)",
+        "app/src/adapters/whisper/whisper-decision-client.ts + whisper-decision-speech-input.ts (local whisper.cpp-audio-decision)",
+        "app/src/adapters/browser/wav-audio-recorder.ts (16-bit PCM WAV capture)",
+        "app/tests/whisper-decision.test.ts",
+        "app/tests/whisper-live.test.ts green against local whisper-server :18160 (base.en)",
+        "real-device microphone validation still pending"
+      ]
+    },
+    {
+      "id": "T3",
+      "title": "Implement rule-based product intent parser",
+      "status": "done",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "'Ich suche X' and variants produce TargetProduct(X).",
+        "Normalization handles articles and casing."
+      ],
+      "evidence": [
+        "app/src/application/product-request.ts",
+        "app/tests/product-request.test.ts"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "Saying a product name reliably sets the current target offline.",
+    "Ambiguous input triggers a spoken clarification instead of a guess."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Noisy environment degrades STT.",
+      "likelihood": 4,
+      "impact": 4,
+      "mitigation": "Push-to-talk, short expected phrases, optional cloud fallback."
+    }
+  ],
+  "safetyImplications": [
+    "A misheard target must be confirmable before guidance begins."
+  ],
+  "accessibilityImplications": [
+    "The entire entry flow is voice-only with no visual requirement."
+  ],
+  "privacyImplications": [
+    "Audio processed ephemerally; no recording stored."
+  ],
+  "verificationRequirements": [
+    "Unit tests with dummy and local adapters.",
+    "Network-isolation test for the local STT adapter."
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-01",
+      "decision": "Local STT can use whisper.cpp-audio-decision (/v1/audio/decisions) with keyword intent plus transcribe fallback; Web Speech remains the zero-install fallback.",
+      "rationale": "Direct intent with calibrated abstain/coverage plus a transcript for fuzzy product resolution; inline schemas must set abstain thresholds."
+    }
+  ],
+  "tags": [
+    "mvp",
+    "speech",
+    "product-request"
+  ],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T12:45:00Z"
+}

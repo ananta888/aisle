@@ -1,0 +1,93 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.mvp-safety-confidence",
+  "title": "MVP safety and confidence",
+  "status": "validation",
+  "boundedContext": "Safety",
+  "purpose": "Minimal, MVP-scoped safety layer: confidence is preserved end-to-end and no output implies a guarantee the system cannot give.",
+  "architecturalScope": "Safety bounded context (MVP subset of todo.safety-confidence-engine). ConfidenceFusion + SafetySupervisor between guidance and speech.",
+  "domainContext": "Confidence, ConfidenceScore, Observation, Uncertainty. Low confidence leads to STOP/reacquire/reassess.",
+  "dependencies": [],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Confidence pass-through",
+      "description": "Every observation in the loop carries confidence and thresholds are enforced.",
+      "status": "done"
+    },
+    {
+      "id": "M2",
+      "title": "Phrasing guard",
+      "description": "Outgoing messages are reviewed and downgraded when uncertain.",
+      "status": "done"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Enforce confidence from detector to speech",
+      "status": "done",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Low-confidence detections do not produce confident statements."
+      ],
+      "evidence": [
+        "app/tests/mvp-loop.test.ts"
+      ]
+    },
+    {
+      "id": "T2",
+      "title": "Implement guarantee-phrase guard",
+      "status": "done",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "Automated test proves guarantee phrases cannot be emitted."
+      ],
+      "evidence": [
+        "app/src/application/safety-supervisor.ts",
+        "app/tests/safety-supervisor.test.ts"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "No spatial claim without evidence from validated perception.",
+    "Low confidence reliably yields STOP/reacquire/reassess.",
+    "Uncertainty is always audible."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Users over-trust live guidance.",
+      "likelihood": 4,
+      "impact": 5,
+      "mitigation": "Consistent uncertainty language; explicit 'I am not sure' states."
+    }
+  ],
+  "safetyImplications": [
+    "This is the MVP safety boundary; strictest tests apply."
+  ],
+  "accessibilityImplications": [
+    "Uncertainty must be spoken, never visual-only."
+  ],
+  "privacyImplications": [
+    "No safety logs beyond ephemeral session state."
+  ],
+  "verificationRequirements": [
+    "Guarantee-phrase detection test.",
+    "Confidence threshold scenario tests."
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-01",
+      "decision": "Ship a minimal safety subset for the MVP and defer the full engine to todo.safety-confidence-engine.",
+      "rationale": "The closed loop must be safe from day one without blocking on the complete engine."
+    }
+  ],
+  "tags": [
+    "mvp",
+    "safety",
+    "confidence"
+  ],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T12:00:00Z"
+}

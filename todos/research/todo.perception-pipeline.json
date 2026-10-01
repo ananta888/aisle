@@ -1,0 +1,137 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.perception-pipeline",
+  "title": "Perception pipeline (vision, OCR, barcode, depth)",
+  "status": "research",
+  "boundedContext": "Perception",
+  "purpose": "Turn camera and sensor input into confidence-bearing observations (objects, text, barcodes, shelf structure, depth) behind stable ports, classical CV first.",
+  "architecturalScope": "Perception bounded context. VisionPort plus specialized ports (OCR, BarcodeScanner, ShelfRecognizer, DepthEstimator, ObjectDetector). Adapters configurable local/remote.",
+  "domainContext": "Observation, Confidence, BoundingBox, Shelf, ProductCandidate. Every observation carries confidence, source and timestamp.",
+  "dependencies": [],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Port contracts and dummy adapters",
+      "description": "All perception ports defined; deterministic dummy adapters enable domain tests without hardware.",
+      "status": "todo"
+    },
+    {
+      "id": "M2",
+      "title": "OCR and barcode on device",
+      "description": "Tesseract and ZXing adapters run offline and are evaluated.",
+      "status": "todo"
+    },
+    {
+      "id": "M3",
+      "title": "Shelf recognition baseline",
+      "description": "Classical CV baseline recognizes shelf rows at acceptable confidence.",
+      "status": "todo"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Define perception port interfaces",
+      "description": "Narrow interfaces that return Observation<T>.",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Domain tests run against dummy adapters without camera or network."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T2",
+      "title": "Benchmark on-device OCR candidates",
+      "description": "Compare CER of Tesseract vs PaddleOCR on shelf-label and packaging datasets.",
+      "status": "todo",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "Evaluation report with CER per candidate.",
+        "License of each candidate documented."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T3",
+      "title": "Implement barcode adapter",
+      "description": "ZXing-based GTIN scanning, offline.",
+      "status": "todo",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "Adapter contract tests pass.",
+        "Barcode detection rate measured on a labelled dataset."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T4",
+      "title": "Shelf recognition baseline",
+      "description": "Classical CV: detect horizontal shelf levels and candidate product rows.",
+      "status": "todo",
+      "milestoneId": "M3",
+      "acceptanceCriteria": [
+        "Baseline metrics reported with confidence calibration."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T5",
+      "title": "Assess depth estimation only as non-metric",
+      "description": "Determine whether monocular depth adds value without over-claiming distance.",
+      "status": "todo",
+      "milestoneId": "M3",
+      "acceptanceCriteria": [
+        "Documented decision on enabling depth, defaulting to disabled."
+      ],
+      "evidence": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "Perception adapters are substitutable without changing domain code.",
+    "No adapter output is consumed without confidence.",
+    "Low-confidence observations produce an explicit uncertainty signal."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "OCR quality on curved, reflective packaging is poor.",
+      "likelihood": 4,
+      "impact": 4,
+      "mitigation": "Prefer barcode; use barcode/OCR cross-check; retry with guidance."
+    },
+    {
+      "id": "R2",
+      "description": "Vision inference drains battery / overheats device.",
+      "likelihood": 4,
+      "impact": 3,
+      "mitigation": "Small models, duty cycling, reduced frame rate."
+    }
+  ],
+  "safetyImplications": [
+    "Depth and detection outputs must never be used to claim a clear path; they are advisory only.",
+    "Stale observations must be discarded or flagged."
+  ],
+  "accessibilityImplications": [
+    "Perception results must be expressible as spoken/haptic output; no vision-only dependency."
+  ],
+  "privacyImplications": [
+    "Camera frames are processed ephemerally in memory and never persisted or uploaded by default.",
+    "Facial recognition is out of scope and must not be introduced."
+  ],
+  "verificationRequirements": [
+    "Adapter contract tests.",
+    "Model evaluation against documented thresholds.",
+    "Network isolation test proving local adapters make no calls."
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-01",
+      "decision": "MVP perception is scoped to todo.live-camera-pipeline, todo.vision-product-search and todo.target-tracking; shelf recognition, depth and OCR/barcode move to this research track for later.",
+      "rationale": "docs/15-mvp-priority.md."
+    }
+  ],
+  "tags": ["vision", "ocr", "barcode", "depth"],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T00:00:00Z"
+}

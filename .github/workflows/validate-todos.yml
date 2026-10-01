@@ -1,0 +1,26 @@
+name: validate-todos
+
+on:
+  push:
+    paths:
+      - "todos/**"
+      - "tools/validate_todos.py"
+      - ".github/workflows/validate-todos.yml"
+  pull_request:
+    paths:
+      - "todos/**"
+      - "tools/validate_todos.py"
+      - ".github/workflows/validate-todos.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install -r tools/requirements.txt
+      - name: Validate todos
+        run: python tools/validate_todos.py

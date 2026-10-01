@@ -1,0 +1,88 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.navigation-routing",
+  "title": "Coarse navigation and routing",
+  "status": "backlog",
+  "boundedContext": "Navigation",
+  "purpose": "Compute deterministic routes from the current pose to the destination zone/aisle/shelf and track progress.",
+  "architecturalScope": "Navigation bounded context. PathPlanner over StoreMap. Deterministic A*/Dijkstra; no learned components in the critical path.",
+  "domainContext": "Destination, Route, NavigationInstruction, NavigationSession aggregate. Emits DestinationResolved, NavigationPaused, NavigationResumed.",
+  "dependencies": ["todo.store-mapping", "todo.indoor-localization"],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Deterministic routing core",
+      "description": "A* over the StoreMap graph with unit tests on synthetic maps.",
+      "status": "todo"
+    },
+    {
+      "id": "M2",
+      "title": "Progress tracking and re-planning",
+      "description": "Track progress and re-plan on pose updates.",
+      "status": "todo"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Define PathPlanner port and Route types",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Route decisions are unit-testable without hardware."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T2",
+      "title": "Implement A* planner",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Route length within 1.3x optimal on test graphs.",
+        "Tests cover unreachable destinations."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T3",
+      "title": "Implement progress tracking and re-planning",
+      "status": "todo",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "Re-planning triggered on deviation or localization jump."
+      ],
+      "evidence": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "Routing is deterministic for identical inputs.",
+    "Unreachable or stale-map cases are handled explicitly, not by guessing."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Navigation depends on unreliable localization.",
+      "likelihood": 5,
+      "impact": 4,
+      "mitigation": "Re-plan on pose updates and expose localization confidence to guidance."
+    }
+  ],
+  "safetyImplications": [
+    "Routing must not imply obstacle-free travel; guidance always defers to safety warnings."
+  ],
+  "accessibilityImplications": [
+    "The planner only produces structured instructions; a separate generator makes them accessible."
+  ],
+  "privacyImplications": [
+    "Routes are computed from the map and ephemeral pose; no route history is stored."
+  ],
+  "verificationRequirements": [
+    "Unit tests on synthetic graphs.",
+    "Property test: no route through non-traversable edges."
+  ],
+  "decisionLog": [],
+  "tags": ["routing", "astar"],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T00:00:00Z"
+}

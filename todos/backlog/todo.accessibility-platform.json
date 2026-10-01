@@ -1,0 +1,88 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.accessibility-platform",
+  "title": "Accessibility platform (ARIA, screen readers, focus)",
+  "status": "backlog",
+  "boundedContext": "Accessibility",
+  "purpose": "Provide the shared, non-visual UI substrate: semantic markup, correct ARIA, live regions, focus management, large targets and screen-reader parity.",
+  "architecturalScope": "Accessibility bounded context, cross-cutting. Wraps the UI layer; consumed by all user-facing features.",
+  "domainContext": "No domain state of its own; defines interaction contracts (speech-only, haptics, minimal interaction).",
+  "dependencies": [],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Accessible app shell",
+      "description": "Semantic structure, landmarks, live regions, focus management.",
+      "status": "todo"
+    },
+    {
+      "id": "M2",
+      "title": "Automated accessibility gates",
+      "description": "axe-core/pa11y run in CI on core flows.",
+      "status": "todo"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Define accessibility requirements and DoD (WCAG 2.2 AA)",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "ACCESSIBILITY.md exists and is referenced by the DoD."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T2",
+      "title": "Implement accessible app shell and ARIA live regions",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Core flow operable with TalkBack without sight."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T3",
+      "title": "Integrate axe-core/pa11y into CI",
+      "status": "todo",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "CI fails on critical accessibility violations."
+      ],
+      "evidence": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "Every user-facing feature works without visual dependency (AGENTS.md 21).",
+    "No important information exists only visually.",
+    "Touch targets >= 44x44 px."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Visual information creeps in over time.",
+      "likelihood": 3,
+      "impact": 5,
+      "mitigation": "Automated gates plus regular sightless manual testing."
+    }
+  ],
+  "safetyImplications": [
+    "None directly; accessibility failure can indirectly cause unsafe use and is treated as high severity."
+  ],
+  "accessibilityImplications": [
+    "This track IS the accessibility foundation."
+  ],
+  "privacyImplications": [
+    "No additional data collection."
+  ],
+  "verificationRequirements": [
+    "Automated axe/pa11y in CI.",
+    "Manual TalkBack and VoiceOver walkthroughs."
+  ],
+  "decisionLog": [],
+  "tags": ["accessibility", "aria", "wcag"],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T00:00:00Z"
+}

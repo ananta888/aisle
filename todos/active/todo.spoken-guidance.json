@@ -1,0 +1,106 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.spoken-guidance",
+  "title": "Deterministic spoken guidance",
+  "status": "partial",
+  "boundedContext": "Guidance",
+  "purpose": "Convert tracked target observations into simple, deterministic movement instructions and speak them without unnecessary repetition.",
+  "architecturalScope": "Guidance bounded context. GuidanceGenerator + SpeechOutputPort. Consumes TargetTrack/ProductCandidate; contains no model calls.",
+  "domainContext": "NavigationInstruction, RelativePosition, Confidence, Distance (qualitative: near/far/directly ahead).",
+  "dependencies": [],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Instruction rules",
+      "description": "Deterministic mapping from relative position to instruction.",
+      "status": "done"
+    },
+    {
+      "id": "M2",
+      "title": "Non-repeating speech output",
+      "description": "Identical instructions are suppressed; state changes are prioritised and obsolete speech interrupted.",
+      "status": "done"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Define instruction rules for horizontal/vertical/size",
+      "status": "done",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Rules are pure functions, unit-testable without audio."
+      ],
+      "evidence": [
+        "app/src/application/guidance-rules.ts",
+        "app/tests/guidance-rules.test.ts"
+      ]
+    },
+    {
+      "id": "T2",
+      "title": "Implement speech output with deduplication and interruption",
+      "status": "validation",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "Repeated identical instructions are not re-spoken.",
+        "New state changes interrupt obsolete instructions."
+      ],
+      "evidence": [
+        "app/src/adapters/browser/web-speech-output.ts (browser TTS, dedup + cancel)",
+        "app/src/adapters/dragon/dragon-voice-output.ts + dragon-voice-client.ts (local Piper TTS, dedup/cancel/stale-drop)",
+        "app/src/adapters/browser/web-audio-player.ts (WAV playback)",
+        "app/tests/dragon-voice.test.ts",
+        "app/tests/dragon-voice-live.test.ts green (55 KB RIFF/WAV from local runtime)",
+        "screen-reader coordination still not field-tested"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "Instructions are deterministic for identical observations.",
+    "Only qualitative distance terms are used unless depth supports more.",
+    "Every instruction is understandable without any visual cue."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Instructions conflict with the screen reader.",
+      "likelihood": 4,
+      "impact": 4,
+      "mitigation": "Explicit screenreader-guided vs app-guided mode."
+    },
+    {
+      "id": "R2",
+      "description": "Exact distances are inferred from box size and stated as fact.",
+      "likelihood": 3,
+      "impact": 4,
+      "mitigation": "Qualitative terms only; no metric claim without depth."
+    }
+  ],
+  "safetyImplications": [
+    "Never say 'you can go' or imply a guaranteed clear path."
+  ],
+  "accessibilityImplications": [
+    "This is the primary user-facing output channel and must be fully non-visual."
+  ],
+  "privacyImplications": [
+    "No transcript persistence."
+  ],
+  "verificationRequirements": [
+    "Unit tests for the instruction rule table.",
+    "Manual screen-reader walkthrough."
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-01",
+      "decision": "Speech output supports a local Dragon-Voice/Piper adapter behind the SpeechOutput port; browser speechSynthesis remains the zero-install default.",
+      "rationale": "Local TTS avoids cloud dependency; the token is local-only and must never be committed."
+    }
+  ],
+  "tags": [
+    "mvp",
+    "guidance",
+    "speech"
+  ],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T13:00:00Z"
+}

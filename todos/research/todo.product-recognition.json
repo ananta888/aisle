@@ -1,0 +1,123 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.product-recognition",
+  "title": "Product recognition and identification",
+  "status": "research",
+  "boundedContext": "ProductDiscovery",
+  "purpose": "Identify the requested product at the shelf reliably, primarily via barcode and OCR against a product catalog, with visual re-identification as a later enhancement.",
+  "architecturalScope": "ProductDiscovery bounded context. ProductCatalogPort and a ProductMatcher service. Depends on Perception outputs; independent of any retailer API.",
+  "domainContext": "Product, ProductCandidate, ProductIdentifier, BoundingBox, Confidence. Emits ProductCandidateDetected and TargetProductConfirmed.",
+  "dependencies": ["todo.perception-pipeline"],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Catalog + barcode identification",
+      "description": "GTIN resolves to a product name offline from a cached catalog.",
+      "status": "todo"
+    },
+    {
+      "id": "M2",
+      "title": "OCR-based fallback matching",
+      "description": "Fuzzy matching of OCR text against catalog names.",
+      "status": "todo"
+    },
+    {
+      "id": "M3",
+      "title": "Visual re-identification (experimental)",
+      "description": "Embedding match against reference images as an optional aid.",
+      "status": "todo"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Select catalog source and license model",
+      "description": "Open Food Facts (ODbL) vs local list; document share-alike duties.",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Data source and license obligations documented."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T2",
+      "title": "Define ProductCatalogPort and ProductResolver",
+      "description": "lookup/search/similar returning Observations.",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Domain tests cover found, ambiguous and not-found cases."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T3",
+      "title": "Implement OCR fuzzy matcher",
+      "description": "Rank candidates with explicit scores; never fabricate a match.",
+      "status": "todo",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "Top-1/Top-3 accuracy measured.",
+        "Low confidence yields a question, not a guess."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T4",
+      "title": "Feasibility study: visual re-identification",
+      "description": "Assess whether embeddings help without barcode/OCR.",
+      "status": "todo",
+      "milestoneId": "M3",
+      "acceptanceCriteria": [
+        "Go/no-go decision with measured evidence."
+      ],
+      "evidence": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "Barcode path: GTIN resolves correctly for the test catalog.",
+    "No product is reported as confirmed without corroborating evidence.",
+    "Product not found is communicated honestly."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Free visual SKU recognition is not achievable on a phone.",
+      "likelihood": 5,
+      "impact": 4,
+      "mitigation": "Treat barcode/OCR as the primary path; visual ID is optional research."
+    },
+    {
+      "id": "R2",
+      "description": "Catalog license (ODbL) imposes share-alike on derived databases.",
+      "likelihood": 3,
+      "impact": 3,
+      "mitigation": "Document and, if needed, isolate derived data."
+    }
+  ],
+  "safetyImplications": [
+    "Confirming the wrong product must trigger an explicit uncertainty message."
+  ],
+  "accessibilityImplications": [
+    "Identification results must be spoken clearly, including confidence qualifiers."
+  ],
+  "privacyImplications": [
+    "No images of products are retained beyond ephemeral processing.",
+    "No personal purchase history is stored."
+  ],
+  "verificationRequirements": [
+    "Catalog and matcher unit tests with adversarial OCR text.",
+    "Measured identification accuracy on a labelled test set."
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-01",
+      "decision": "MVP identification uses a general VLM via todo.vision-product-search; barcode/OCR/catalog is the post-MVP reliability path researched here.",
+      "rationale": "docs/15-mvp-priority.md."
+    }
+  ],
+  "tags": ["products", "catalog", "barcode", "ocr"],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T00:00:00Z"
+}

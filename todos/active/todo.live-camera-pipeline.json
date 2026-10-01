@@ -1,0 +1,83 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.live-camera-pipeline",
+  "title": "Live camera pipeline with configurable sampling",
+  "status": "partial",
+  "boundedContext": "Perception",
+  "purpose": "Provide a continuous, battery-aware camera frame source with cheap preprocessing and configurable sampling to downstream vision.",
+  "architecturalScope": "Perception bounded context. CameraPort / SensorSource. Owns frame capture, downscaling, throttling; does not perform recognition itself.",
+  "domainContext": "CameraFrame, Timestamp. Frame metadata (size, orientation) as value objects.",
+  "dependencies": [],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Frame capture and throttling",
+      "description": "Frames flow at 30 FPS with cheap preprocessing; vision sampling configurable separately.",
+      "status": "done"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Define CameraPort and CameraFrame",
+      "status": "done",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Pipeline testable with a synthetic frame source."
+      ],
+      "evidence": [
+        "app/src/ports/camera.ts",
+        "app/tests/mvp-loop.test.ts"
+      ]
+    },
+    {
+      "id": "T2",
+      "title": "Implement capture with configurable FPS and downscaling",
+      "status": "validation",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Camera and vision sampling rates are independently configurable.",
+        "Frame buffers are released after use."
+      ],
+      "evidence": [
+        "app/src/adapters/browser/browser-camera.ts",
+        "configurable sampling in app/src/ui/main.ts; device profiling pending"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "The vision loop can sample 1-3 FPS while the camera runs faster.",
+    "No frame is persisted to disk.",
+    "Sampling rates are runtime-configurable."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Continuous camera drains battery and heats the device.",
+      "likelihood": 5,
+      "impact": 3,
+      "mitigation": "Configurable sampling, downscaling, pause when not needed."
+    }
+  ],
+  "safetyImplications": [
+    "Frames are advisory input only; the pipeline must not imply obstacle clearance."
+  ],
+  "accessibilityImplications": [
+    "Pipeline must keep serving frames while the screen is off or UI is not visible."
+  ],
+  "privacyImplications": [
+    "Frames are ephemeral in memory, never stored or uploaded by default."
+  ],
+  "verificationRequirements": [
+    "Unit tests with synthetic frames.",
+    "Battery/thermal profiling over sustained use."
+  ],
+  "decisionLog": [],
+  "tags": [
+    "mvp",
+    "camera",
+    "pipeline"
+  ],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T12:00:00Z"
+}

@@ -1,0 +1,82 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.target-tracking",
+  "title": "Temporal target tracking and smoothing",
+  "status": "validation",
+  "boundedContext": "VisualSearch",
+  "purpose": "Maintain a short-lived, smoothed target track across frames so a single missed frame does not falsely signal target loss.",
+  "architecturalScope": "VisualSearch bounded context. Sits between TargetProductDetector and Guidance; owns track state, not detection.",
+  "domainContext": "TargetTrack, ProductCandidate, Confidence, RelativePosition, Timestamp. Emits candidate/tracked/lost as domain facts.",
+  "dependencies": [
+    "todo.vision-product-search"
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Bounded smoothing",
+      "description": "A short miss window keeps the track alive; only sustained misses declare loss.",
+      "status": "done"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Define TargetTrack and update policy",
+      "status": "done",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Policy parameters (window, thresholds) are configurable."
+      ],
+      "evidence": [
+        "app/src/application/target-tracker.ts"
+      ]
+    },
+    {
+      "id": "T2",
+      "title": "Implement smoothing and lost-detection",
+      "status": "done",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Single missed frame does not produce TARGET_LOST in tests.",
+        "Sustained misses do produce TARGET_LOST."
+      ],
+      "evidence": [
+        "app/tests/target-tracker.test.ts",
+        "app/tests/mvp-loop.test.ts"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "Tracking is deterministic and unit-testable from frame sequences.",
+    "Confidence is smoothed and never inflated."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Smoothing too aggressive delays useful feedback.",
+      "likelihood": 3,
+      "impact": 3,
+      "mitigation": "Configurable windows and latency measurements."
+    }
+  ],
+  "safetyImplications": [
+    "Smoothing must not keep asserting a target that is gone beyond the miss window."
+  ],
+  "accessibilityImplications": [
+    "Track state changes drive spoken updates; hysteresis reduces confusing chatter."
+  ],
+  "privacyImplications": [
+    "Track state is ephemeral and discarded after the session."
+  ],
+  "verificationRequirements": [
+    "Sequence-based unit tests including temporary misses."
+  ],
+  "decisionLog": [],
+  "tags": [
+    "mvp",
+    "tracking",
+    "smoothing"
+  ],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T12:00:00Z"
+}

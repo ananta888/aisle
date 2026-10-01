@@ -1,0 +1,103 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.safety-confidence-engine",
+  "title": "Safety and confidence engine",
+  "status": "backlog",
+  "boundedContext": "Safety",
+  "purpose": "Make confidence a first-class domain value and guarantee that no output implies a safety guarantee the system cannot provide.",
+  "architecturalScope": "Safety bounded context. ConfidenceFusion and SafetySupervisor, sitting between all capability outputs and user-facing output.",
+  "domainContext": "Confidence, ConfidenceScore, Observation, Uncertainty, Obstacle, ObstacleDetected. Low confidence leads to STOP, reacquire, reassess.",
+  "dependencies": [],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Confidence model and thresholds",
+      "description": "Confidence is carried through the system and thresholds are configurable.",
+      "status": "todo"
+    },
+    {
+      "id": "M2",
+      "title": "Safety supervisor and phrasing guard",
+      "description": "Every outgoing message is reviewed and downgraded when uncertain.",
+      "status": "todo"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Define Confidence value object and Observation contract",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "No result type exists without confidence."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T2",
+      "title": "Implement confidence fusion and threshold policy",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Tests cover stale and contradictory observations."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T3",
+      "title": "Implement SafetySupervisor phrasing guard",
+      "status": "todo",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "No guarantee phrases pass unfiltered.",
+        "Obstacle hints are always marked uncertain."
+      ],
+      "evidence": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "Confidence remains available throughout the pipeline (AGENTS.md 20).",
+    "Low confidence reliably produces STOP/reacquire/reassess.",
+    "A test proves guarantee phrasing cannot be emitted."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Users over-trust the system.",
+      "likelihood": 4,
+      "impact": 5,
+      "mitigation": "Consistent uncertainty language and non-guarantee messaging."
+    },
+    {
+      "id": "R2",
+      "description": "Confidence values are uncalibrated and meaningless.",
+      "likelihood": 3,
+      "impact": 4,
+      "mitigation": "Calibration evaluation per module."
+    }
+  ],
+  "safetyImplications": [
+    "This is the primary safety boundary of the system and must have the strictest tests."
+  ],
+  "accessibilityImplications": [
+    "Uncertainty must be audible, not only visual."
+  ],
+  "privacyImplications": [
+    "Safety audit logs are ephemeral and local by default."
+  ],
+  "verificationRequirements": [
+    "Fuzzing of the dialog logic for uncertainty handling.",
+    "Automated guarantee-phrase detection test.",
+    "Scenario tests for contradictory observations."
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-01",
+      "decision": "MVP ships todo.mvp-safety-confidence as a minimal subset; the full engine remains a later extension.",
+      "rationale": "docs/15-mvp-priority.md."
+    }
+  ],
+  "tags": ["safety", "confidence"],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T00:00:00Z"
+}

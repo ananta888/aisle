@@ -1,0 +1,124 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.mvp-end-to-end-loop",
+  "title": "MVP end-to-end perception-guidance loop",
+  "status": "partial",
+  "boundedContext": "Platform",
+  "purpose": "Integrate the closed loop: spoken request → live camera → target detection → relative position → spoken guidance, repeated until target reached.",
+  "architecturalScope": "Platform integration. Orchestrates ProductRequest, VisualSearch, Guidance and Safety; owns nothing domain-specific of its own.",
+  "domainContext": "GuidanceSession, TargetProduct, TargetTrack, Observation, Confidence, NavigationInstruction.",
+  "dependencies": [
+    "todo.speech-product-request",
+    "todo.live-camera-pipeline",
+    "todo.vision-product-search",
+    "todo.target-tracking",
+    "todo.spoken-guidance",
+    "todo.guidance-state-machine",
+    "todo.mvp-safety-confidence"
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Integration slice with fakes",
+      "description": "Loop runs end-to-end with dummy adapters and is deterministic.",
+      "status": "done"
+    },
+    {
+      "id": "M2",
+      "title": "Real adapters wired",
+      "description": "Local STT + VLM + TTS drive a real device.",
+      "status": "validation"
+    },
+    {
+      "id": "M3",
+      "title": "Field acceptance",
+      "description": "A test user completes the MVP acceptance goal without visual interaction.",
+      "status": "todo"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Wire the loop with dummy adapters",
+      "status": "done",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Deterministic end-to-end test from utterance to instruction."
+      ],
+      "evidence": [
+        "deterministic integration test app/tests/mvp-loop.test.ts"
+      ]
+    },
+    {
+      "id": "T2",
+      "title": "Wire real local adapters",
+      "status": "validation",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "Loop runs on a device with local STT, VLM and TTS."
+      ],
+      "evidence": [
+        "browser adapters wired in app/src/ui/main.ts; real-device run pending"
+      ]
+    },
+    {
+      "id": "T3",
+      "title": "Conduct acceptance test with a user",
+      "status": "todo",
+      "milestoneId": "M3",
+      "acceptanceCriteria": [
+        "All 8 acceptance steps pass without visual UI interaction."
+      ],
+      "evidence": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "A test user can: open app, say a product, aim the camera, hear live search guidance, have the product detected, receive left/right/up/down/forward guidance, approach it, and hear a target-reached message.",
+    "No map, SLAM, routing, retailer API or inventory is required.",
+    "All AGENTS.md DoD items (a11y, safety, privacy) are satisfied for this loop."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Scope creep toward full navigation.",
+      "likelihood": 4,
+      "impact": 4,
+      "mitigation": "MVP development rule: prioritise the closed loop until acceptance is met."
+    },
+    {
+      "id": "R2",
+      "description": "End-to-end latency too high for usable guidance.",
+      "likelihood": 3,
+      "impact": 4,
+      "mitigation": "Configurable sampling, small models, deduplicated speech."
+    }
+  ],
+  "safetyImplications": [
+    "Integration must keep the Safety Supervisor in the path; no bypass for performance."
+  ],
+  "accessibilityImplications": [
+    "Acceptance explicitly requires operation without visual UI interaction."
+  ],
+  "privacyImplications": [
+    "The loop runs offline by default; cloud vision is optional and explicit."
+  ],
+  "verificationRequirements": [
+    "Deterministic integration test.",
+    "Field test against the 8 acceptance steps.",
+    "Latency and battery measurements."
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-01",
+      "decision": "MVP prioritises the closed perception-guidance loop over store maps, SLAM and routing.",
+      "rationale": "See docs/15-mvp-priority.md; full navigation is deferred to later extensions."
+    }
+  ],
+  "tags": [
+    "mvp",
+    "end-to-end",
+    "integration"
+  ],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T12:00:00Z"
+}

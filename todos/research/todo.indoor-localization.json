@@ -1,0 +1,118 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.indoor-localization",
+  "title": "Indoor localization and camera pose",
+  "status": "research",
+  "boundedContext": "Localization",
+  "purpose": "Determine the user's pose inside a store from visual-inertial sensing, marker anchors and the store map, with honest, calibrated confidence.",
+  "architecturalScope": "Localization bounded context. LocalizationPort and MarkerDetector. Feeds Navigation. Concrete SLAM/VIO engines are infrastructure adapters.",
+  "domainContext": "Position, Pose, Heading, LocalizationState, Confidence, Anchor, LocalizationSession aggregate. Emits LocalizationLost / LocalizationRecovered.",
+  "dependencies": ["todo.store-mapping", "todo.perception-pipeline"],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Marker-based coarse localization",
+      "description": "AprilTag/ArUco anchors plus dead reckoning yield <2 m accuracy on the test market.",
+      "status": "todo"
+    },
+    {
+      "id": "M2",
+      "title": "Visual-inertial odometry integration",
+      "description": "A VIO adapter provides pose between marker resets.",
+      "status": "todo"
+    },
+    {
+      "id": "M3",
+      "title": "Map relocalization",
+      "description": "Localization recovers against a visual map without infrastructure markers.",
+      "status": "todo"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Evaluate marker vs VIO vs WiFi/BLE approaches",
+      "description": "Compare accuracy, cost, infrastructure needs and licensing.",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Comparison report with a staged recommendation (marker first)."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T2",
+      "title": "Define LocalizationPort and LocalizationState",
+      "description": "Include confidence and stale-observation handling.",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Domain tests cover loss, recovery and stale observations."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T3",
+      "title": "Evaluate open VIO/SLAM engines and licenses",
+      "description": "OpenVINS, RTAB-Map, ORB-SLAM3, Basalt plus ARCore.",
+      "status": "todo",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "License matrix documented; copyleft engines isolated if used."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T4",
+      "title": "Prototype map-based relocalization",
+      "description": "Relocalize against a pre-built visual map of the test market.",
+      "status": "todo",
+      "milestoneId": "M3",
+      "acceptanceCriteria": [
+        "Reported position error and recovery time vs marker baseline."
+      ],
+      "evidence": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "Coarse position error < 2 m after a marker reset on the test market.",
+    "Localization loss is always announced and never hidden.",
+    "The localization adapter is replaceable without domain changes."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Drift makes position unusable over longer routes.",
+      "likelihood": 5,
+      "impact": 5,
+      "mitigation": "Marker resets, VIO fusion, confidence decay, explicit lost-state."
+    },
+    {
+      "id": "R2",
+      "description": "Strong VIO engines are GPL, limiting distribution.",
+      "likelihood": 3,
+      "impact": 4,
+      "mitigation": "Prefer permissive/ native options; isolate copyleft engines behind a service boundary."
+    }
+  ],
+  "safetyImplications": [
+    "Never emit a spatial claim without evidence from sensors/map/validated perception (AGENTS.md 19).",
+    "On uncertainty: STOP, reacquire, reassess rather than guess."
+  ],
+  "accessibilityImplications": [
+    "Localization state must be expressed audibly (e.g. 'I am not sure where we are')."
+  ],
+  "privacyImplications": [
+    "No persistent location history; pose is ephemeral.",
+    "Camera frames used for localization are not stored."
+  ],
+  "verificationRequirements": [
+    "Localization error measurement on the test market.",
+    "Tests for LocalizationLost/Recovered transitions.",
+    "Confidence calibration report."
+  ],
+  "decisionLog": [],
+  "tags": ["slam", "vio", "markers", "indoor"],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T00:00:00Z"
+}

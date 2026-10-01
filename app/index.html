@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="aisle-decision-endpoint" content="http://127.0.0.1:18150" />
+    <meta name="aisle-whisper-endpoint" content="" />
+    <meta name="aisle-tts-endpoint" content="" />
+    <meta name="aisle-tts-token" content="" />
+    <title>A.I.S.L.E. – Sprachassistenz zur Produktsuche</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: system-ui, sans-serif;
+      }
+      body {
+        margin: 0;
+        padding: 1.5rem;
+        line-height: 1.6;
+      }
+      main {
+        max-width: 40rem;
+        margin: 0 auto;
+        display: grid;
+        gap: 1.25rem;
+      }
+      h1 {
+        font-size: 1.6rem;
+        margin: 0;
+      }
+      .controls {
+        display: grid;
+        gap: 1rem;
+      }
+      button {
+        min-height: 56px;
+        font-size: 1.25rem;
+        border-radius: 12px;
+        border: 2px solid currentColor;
+        background: transparent;
+        color: inherit;
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+      }
+      button:focus-visible {
+        outline: 4px solid #1a73e8;
+        outline-offset: 3px;
+      }
+      #status {
+        min-height: 3rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+      #target {
+        font-size: 1.1rem;
+      }
+      .hint {
+        font-size: 0.95rem;
+        opacity: 0.85;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>A.I.S.L.E.</h1>
+      <p class="hint">
+        Sprachgesteuerte Produktsuche. Nennen Sie ein Produkt und richten Sie die
+        Kamera auf das Regal.
+      </p>
+
+      <div class="controls">
+        <button id="start" type="button">Produkt nennen</button>
+        <button id="stop" type="button">Stopp</button>
+      </div>
+
+      <div id="status" role="status" aria-live="polite" aria-atomic="true">
+        Bereit.
+      </div>
+      <p id="target" aria-live="polite"></p>
+
+      <p class="hint">
+        Hinweis: Dieses System unterstützt die Orientierung, garantiert aber
+        keine sichere Hindernisnavigation. Bitte seien Sie vorsichtig.
+      </p>
+    </main>
+    <script type="module" src="/src/ui/main.ts"></script>
+  </body>
+</html>

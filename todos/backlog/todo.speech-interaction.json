@@ -1,0 +1,112 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.speech-interaction",
+  "title": "Speech interaction (STT, intent, TTS)",
+  "status": "backlog",
+  "boundedContext": "Accessibility",
+  "purpose": "Enable hands-light, fully spoken interaction: push-to-talk speech input, deterministic intent parsing, and prioritised speech output.",
+  "architecturalScope": "Accessibility bounded context. SpeechInputPort, SpeechOutputPort and IntentParser. Local-first, cloud optional and interchangeable.",
+  "domainContext": "Observation<string>, Intent, Confidence. Interaction state owned by the Assistant Orchestrator.",
+  "dependencies": ["todo.accessibility-platform"],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Push-to-talk local STT",
+      "description": "Short command recognition offline.",
+      "status": "todo"
+    },
+    {
+      "id": "M2",
+      "title": "Deterministic intent parsing",
+      "description": "Rule/slot-based intents with fuzzy product queries.",
+      "status": "todo"
+    },
+    {
+      "id": "M3",
+      "title": "Prioritised, interruptible TTS",
+      "description": "Speech output coordinated with screen readers.",
+      "status": "todo"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Benchmark local STT engines (Vosk, sherpa-onnx, Web Speech)",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "WER measured in quiet and noisy conditions.",
+        "Licenses documented."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T2",
+      "title": "Implement local STT adapter with push-to-talk",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Command recognition >= 90% in quiet conditions."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T3",
+      "title": "Implement rule-based intent parser",
+      "status": "todo",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "Intent accuracy > 95% on the command test set."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T4",
+      "title": "Implement TTS adapter with priority and interruption",
+      "status": "todo",
+      "milestoneId": "M3",
+      "acceptanceCriteria": [
+        "'Stop' interrupts immediately.",
+        "No overlapping unintelligible output with the screen reader."
+      ],
+      "evidence": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "Core interaction works fully offline.",
+    "Cloud ASR is optional, visible and never required.",
+    "Audio is processed ephemerally and never stored."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Noisy supermarket degrades STT.",
+      "likelihood": 4,
+      "impact": 4,
+      "mitigation": "Push-to-talk, domain grammar, optional cloud fallback."
+    }
+  ],
+  "safetyImplications": [
+    "Misheard commands must trigger confirmation for consequential actions."
+  ],
+  "accessibilityImplications": [
+    "Speech is the primary modality; it must not depend on any visual fallback."
+  ],
+  "privacyImplications": [
+    "Microphone audio is processed ephemerally; cloud use is explicit opt-in."
+  ],
+  "verificationRequirements": [
+    "STT/intent evaluation against thresholds.",
+    "Network-isolation test for local adapters."
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-01",
+      "decision": "Scope reduced to post-MVP speech extension; the MVP uses todo.speech-product-request and todo.spoken-guidance.",
+      "rationale": "docs/15-mvp-priority.md: keep MVP scope on the closed loop."
+    }
+  ],
+  "tags": ["speech", "stt", "tts", "intent"],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T00:00:00Z"
+}

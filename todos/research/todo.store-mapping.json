@@ -1,0 +1,117 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.store-mapping",
+  "title": "Store mapping and location profiles",
+  "status": "research",
+  "boundedContext": "StoreMapping",
+  "purpose": "Provide traversable indoor maps (graph, zones, anchors) for the reference supermarket and, later, other locations behind a generic LocationProfile.",
+  "architecturalScope": "StoreMapping bounded context. MapRepositoryPort and LocationProfile. Consumed by Navigation and Localization. No dependency on concrete retailer APIs.",
+  "domainContext": "StoreMap, Aisle, Shelf, Zone, Anchor, LocationProfile. All spatial claims must originate from a map artifact, never from a model.",
+  "dependencies": [],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Map data model and schema",
+      "description": "A versioned StoreMap JSON schema exists and validates a hand-authored demo market.",
+      "status": "todo"
+    },
+    {
+      "id": "M2",
+      "title": "Minimal mapping tool",
+      "description": "A tool can author/export a StoreMap for one market, including marker anchors.",
+      "status": "todo"
+    },
+    {
+      "id": "M3",
+      "title": "OpenStreetMap Indoor interoperability",
+      "description": "OSM Indoor (Simple Indoor Tagging) can be imported into a StoreMap.",
+      "status": "todo"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Evaluate map representations (custom JSON vs OSM Indoor vs IndoorGML)",
+      "description": "Compare expressiveness, tooling, license and import effort.",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Written comparison with a recommendation and rationale.",
+        "License implications documented."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T2",
+      "title": "Define StoreMap schema",
+      "description": "Graph nodes/edges, zones, aisles, shelf rows, anchors, coordinate frame.",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Schema validates a demo market.",
+        "Ubiquitous-language terms are used consistently."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T3",
+      "title": "Prototype minimal mapping tool",
+      "description": "Author and export a StoreMap for the test market.",
+      "status": "todo",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "A non-developer can produce a valid StoreMap for one market."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T4",
+      "title": "Prototype OSM Indoor importer",
+      "description": "Map Simple Indoor Tagging to StoreMap where expressiveness allows.",
+      "status": "todo",
+      "milestoneId": "M3",
+      "acceptanceCriteria": [
+        "At least one sample OSM indoor dataset imports without data loss for routing."
+      ],
+      "evidence": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "A StoreMap exists for the test market and validates against its schema.",
+    "The map is fully offline cacheable.",
+    "No map data is sourced from a proprietary retailer API as a hard requirement."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "No usable maps exist for target markets.",
+      "likelihood": 5,
+      "impact": 4,
+      "mitigation": "Self-authoring tool plus OSM Indoor import as first-class paths."
+    },
+    {
+      "id": "R2",
+      "description": "OSM Indoor expressiveness is insufficient for precise shelf placement.",
+      "likelihood": 4,
+      "impact": 3,
+      "mitigation": "Allow custom anchor/shelf extensions layered on top of OSM."
+    }
+  ],
+  "safetyImplications": [
+    "Maps are a safety-relevant evidence source for spatial claims; stale maps must be invalidated and reported as uncertain."
+  ],
+  "accessibilityImplications": [
+    "Map artifacts must be usable by the guidance generator to produce spoken-only instructions."
+  ],
+  "privacyImplications": [
+    "Maps contain no personal data. Crowdsourced updates must be anonymised and free of identifiable traces."
+  ],
+  "verificationRequirements": [
+    "Schema validation of example maps in CI.",
+    "Deterministic round-trip test for the OSM importer."
+  ],
+  "decisionLog": [],
+  "tags": ["maps", "indoor", "osm"],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T00:00:00Z"
+}

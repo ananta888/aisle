@@ -1,0 +1,103 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.todo-tooling",
+  "title": "Todo planning structure and validator",
+  "status": "done",
+  "boundedContext": "Platform",
+  "purpose": "Establish the mandatory Todo planning structure, canonical schema, template, lifecycle directories, automated validator and CI gate required by AGENTS.md sections 1-8 and 26.",
+  "architecturalScope": "Repository tooling. Not part of the runtime product; enables all other tracks to be planned, tracked and validated.",
+  "domainContext": "Todo track, milestone, task, risk, verification requirement. Status is bound to lifecycle directory.",
+  "dependencies": [],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Structure and schema",
+      "description": "Lifecycle directories, canonical schema and template exist.",
+      "status": "done"
+    },
+    {
+      "id": "M2",
+      "title": "Automated validation",
+      "description": "Validator enforces all AGENTS.md section 26 checks and runs in CI.",
+      "status": "done"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Create lifecycle directories, schema and template",
+      "status": "done",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "README, schema, template and all six directories exist."
+      ],
+      "evidence": ["tools/validate_todos.py exits 0 on the repository with all 11 tracks valid."]
+    },
+    {
+      "id": "T2",
+      "title": "Populate initial tracks per bounded context",
+      "status": "done",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Every initial bounded context has at least one track that validates."
+      ],
+      "evidence": ["tools/validate_todos.py exits 0 on the repository with all 11 tracks valid."]
+    },
+    {
+      "id": "T3",
+      "title": "Implement tools/validate_todos.py",
+      "status": "done",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "Validator checks JSON, schema, directory/status, unique ids, dependency refs and milestone refs."
+      ],
+      "evidence": ["tools/validate_todos.py exits 0 on the repository with all 11 tracks valid."]
+    },
+    {
+      "id": "T4",
+      "title": "Add CI workflow running the validator",
+      "status": "done",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "CI runs on todo/tool changes and fails on invalid tracks."
+      ],
+      "evidence": ["tools/validate_todos.py exits 0 on the repository with all 11 tracks valid."]
+    }
+  ],
+  "acceptanceCriteria": [
+    "All tracks validate against the canonical schema.",
+    "Directory and status are consistent for every track.",
+    "The validator exits non-zero on any violation."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Schema diverges from practice and gets bypassed.",
+      "likelihood": 2,
+      "impact": 3,
+      "mitigation": "CI gate required for merge; template kept minimal."
+    }
+  ],
+  "safetyImplications": [
+    "None directly; planning integrity supports safety process traceability."
+  ],
+  "accessibilityImplications": [
+    "Planning documentation must remain textual and screen-reader friendly."
+  ],
+  "privacyImplications": [
+    "No personal data in planning artifacts."
+  ],
+  "verificationRequirements": [
+    "python3 tools/validate_todos.py exits 0 on the repository."
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-01",
+      "decision": "Use JSON Schema draft 2020-12 and a stdlib+jsonschema validator, run in GitHub Actions.",
+      "rationale": "Declarative schema, easy CI integration, minimal dependencies."
+    }
+  ],
+  "tags": ["tooling", "planning", "ci"],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T00:00:00Z"
+}

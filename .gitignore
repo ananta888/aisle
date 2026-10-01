@@ -1,0 +1,26 @@
+# Node / build artifacts
+node_modules/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+
+# Local environments and secrets
+.env
+.env.*
+!.env.example
+
+# Model caches / heavy assets (never commit)
+models/
+*.onnx
+*.gguf
+*.bin
+
+# Raw recordings / personal data (never commit)
+recordings/
+*.wav
+*.mp4
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/

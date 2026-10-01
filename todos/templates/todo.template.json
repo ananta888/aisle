@@ -1,0 +1,60 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.replace-me",
+  "title": "Replace me",
+  "status": "backlog",
+  "boundedContext": "Platform",
+  "purpose": "Why this track exists and what outcome it delivers.",
+  "architecturalScope": "Which layer(s), ports/adapters and bounded contexts are touched.",
+  "domainContext": "Ubiquitous-language terms and domain model elements this track introduces or refines.",
+  "dependencies": [],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "First milestone",
+      "description": "What is true when this milestone is reached.",
+      "status": "todo"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "First task written as a TDD step",
+      "description": "Smallest viable slice.",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "A failing test exists that describes the behaviour."
+      ],
+      "evidence": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "Track-level acceptance criteria, each objectively verifiable."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "Key risk.",
+      "likelihood": 3,
+      "impact": 3,
+      "mitigation": "How the risk is reduced."
+    }
+  ],
+  "safetyImplications": [
+    "How this track could affect physical safety, and how it is prevented."
+  ],
+  "accessibilityImplications": [
+    "How this track stays operable without visual dependency."
+  ],
+  "privacyImplications": [
+    "What data is touched and how it stays local/ephemeral."
+  ],
+  "verificationRequirements": [
+    "How completion is verified (tests, audits, field validation)."
+  ],
+  "decisionLog": [],
+  "tags": [],
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z"
+}

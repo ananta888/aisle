@@ -1,0 +1,88 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.privacy-framework",
+  "title": "Privacy framework and data governance",
+  "status": "backlog",
+  "boundedContext": "Platform",
+  "purpose": "Enforce Privacy by Design: local/ephemeral processing, no persistence of camera/audio, no facial recognition, no hidden telemetry.",
+  "architecturalScope": "Cross-cutting Platform concern. Applies to all adapters and the optional backend. Defines data-flow rules and tests.",
+  "domainContext": "No domain state; defines policies that constrain infrastructure adapters.",
+  "dependencies": [],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Privacy policy and data-flow map",
+      "description": "Every data flow is documented with locality and retention.",
+      "status": "todo"
+    },
+    {
+      "id": "M2",
+      "title": "Enforcement tests",
+      "description": "Automated tests prove local adapters make no network calls and nothing is persisted.",
+      "status": "todo"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Document data flows and retention",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Each flow marked local/ephemeral/optional-cloud."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T2",
+      "title": "Define and run DPIA groundwork",
+      "status": "todo",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "DPIA outline ready before any field use."
+      ],
+      "evidence": []
+    },
+    {
+      "id": "T3",
+      "title": "Add privacy enforcement tests to CI",
+      "status": "todo",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "Tests fail if a local adapter opens a network connection or writes media to disk."
+      ],
+      "evidence": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "No audio/camera data is persisted or uploaded by default.",
+    "No facial recognition capability exists anywhere in the system.",
+    "Telemetry is opt-in and aggregated."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "A dependency silently uploads data.",
+      "likelihood": 3,
+      "impact": 5,
+      "mitigation": "Network isolation and dependency audit."
+    }
+  ],
+  "safetyImplications": [
+    "Loss of user trust is a safety-adjacent risk for adoption."
+  ],
+  "accessibilityImplications": [
+    "Privacy controls must themselves be operable without sight and in simple language."
+  ],
+  "privacyImplications": [
+    "This track IS the privacy guarantee."
+  ],
+  "verificationRequirements": [
+    "CI privacy enforcement tests.",
+    "Dependency and license audit."
+  ],
+  "decisionLog": [],
+  "tags": ["privacy", "gdpr", "data-governance"],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T00:00:00Z"
+}

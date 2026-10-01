@@ -1,0 +1,23 @@
+{
+  "name": "aisle-app",
+  "version": "0.0.0",
+  "private": true,
+  "license": "BSD-3-Clause",
+  "type": "module",
+  "description": "A.I.S.L.E. MVP: closed perception-guidance loop (spoken request -> live camera -> product detection -> spoken guidance).",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10",
+    "vitest": "^2.1.4"
+  }
+}

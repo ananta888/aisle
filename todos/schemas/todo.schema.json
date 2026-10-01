@@ -1,0 +1,308 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aisle.example/schemas/todo.schema.json",
+  "title": "A.I.S.L.E. Todo",
+  "description": "Canonical schema for a Todo track. One file describes one bounded-context/capability track. Every field listed in AGENTS.md section 6 is required.",
+  "type": "object",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "blocked"
+          }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "required": ["blocking"]
+      }
+    }
+  ],
+  "required": [
+    "id",
+    "title",
+    "status",
+    "boundedContext",
+    "purpose",
+    "architecturalScope",
+    "domainContext",
+    "dependencies",
+    "milestones",
+    "tasks",
+    "acceptanceCriteria",
+    "risks",
+    "safetyImplications",
+    "accessibilityImplications",
+    "privacyImplications",
+    "verificationRequirements",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "description": "Optional self-reference to this schema, for editor tooling."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^todo\\.[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Must equal the filename without extension."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3
+    },
+    "status": {
+      "description": "Must be consistent with the containing directory.",
+      "enum": [
+        "research",
+        "backlog",
+        "active",
+        "validation",
+        "partial",
+        "blocked",
+        "done",
+        "superseded"
+      ]
+    },
+    "boundedContext": {
+      "enum": [
+        "Accessibility",
+        "Perception",
+        "Localization",
+        "Navigation",
+        "Guidance",
+        "ProductDiscovery",
+        "ProductRequest",
+        "VisualSearch",
+        "StoreMapping",
+        "Safety",
+        "Platform"
+      ]
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "architecturalScope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "domainContext": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^todo\\.[a-z0-9]+(-[a-z0-9]+)*$"
+      }
+    },
+    "milestones": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/milestone"
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/task"
+      }
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/risk"
+      }
+    },
+    "safetyImplications": {
+      "$ref": "#/$defs/implications"
+    },
+    "accessibilityImplications": {
+      "$ref": "#/$defs/implications"
+    },
+    "privacyImplications": {
+      "$ref": "#/$defs/implications"
+    },
+    "verificationRequirements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "blocking": {
+      "$ref": "#/$defs/blocking",
+      "description": "Required when status is 'blocked'. Describes reason, dependency and possible resolution (AGENTS.md section 3)."
+    },
+    "decisionLog": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "implications": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Explicit statements. An empty array is allowed only if it is a deliberate statement that there are none; prefer documenting 'none identified' explicitly."
+    },
+    "milestone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^M[0-9]+$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "status": {
+          "enum": ["todo", "in_progress", "blocked", "validation", "done", "cancelled"]
+        }
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^T[0-9]+$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "status": {
+          "enum": ["todo", "in_progress", "blocked", "validation", "done", "cancelled"]
+        },
+        "milestoneId": {
+          "type": "string",
+          "pattern": "^M[0-9]+$"
+        },
+        "acceptanceCriteria": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^R[0-9]+$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "likelihood": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "impact": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "mitigation": {
+          "type": "string"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["date", "decision"],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "decision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "blocking": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason", "dependency", "possibleResolution"],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dependency": {
+          "type": "string",
+          "minLength": 1
+        },
+        "possibleResolution": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

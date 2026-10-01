@@ -1,0 +1,90 @@
+{
+  "$schema": "../schemas/todo.schema.json",
+  "id": "todo.guidance-state-machine",
+  "title": "Guidance state machine",
+  "status": "validation",
+  "boundedContext": "Guidance",
+  "purpose": "Drive the closed loop through explicit, deterministic states; state transitions are never controlled implicitly by an LLM.",
+  "architecturalScope": "Guidance bounded context. GuidanceSession aggregate / orchestrator. Coordinates ProductRequest, VisualSearch and SpeechOutput.",
+  "domainContext": "GuidanceSession, LocalizationState-like phase. States: IDLE, LISTENING, SEARCHING, TARGET_CANDIDATE, TARGET_TRACKED, GUIDING, TARGET_LOST, TARGET_REACHED, ERROR.",
+  "dependencies": [
+    "todo.target-tracking",
+    "todo.spoken-guidance"
+  ],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "States and transitions",
+      "description": "Explicit state machine with unit-tested transitions.",
+      "status": "done"
+    },
+    {
+      "id": "M2",
+      "title": "Search behaviour",
+      "description": "Guides camera search when the target is not visible.",
+      "status": "done"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Define states, events and transition table",
+      "status": "done",
+      "milestoneId": "M1",
+      "acceptanceCriteria": [
+        "Happy path and loss path are covered by tests."
+      ],
+      "evidence": [
+        "app/src/application/guidance-state-machine.ts",
+        "app/tests/guidance-state-machine.test.ts"
+      ]
+    },
+    {
+      "id": "T2",
+      "title": "Implement search behaviour instructions",
+      "status": "done",
+      "milestoneId": "M2",
+      "acceptanceCriteria": [
+        "SEARCHING produces camera-search prompts, not invented store locations."
+      ],
+      "evidence": [
+        "search behaviour in app/src/application/guidance-rules.ts",
+        "app/tests/guidance-rules.test.ts"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "SEARCHING → TARGET_CANDIDATE → TARGET_TRACKED → GUIDING → TARGET_REACHED works.",
+    "GUIDING → TARGET_LOST → SEARCHING recovers.",
+    "No LLM-controlled transitions."
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "description": "State flapping causes confusing speech.",
+      "likelihood": 3,
+      "impact": 3,
+      "mitigation": "Hysteresis via target tracking and speech deduplication."
+    }
+  ],
+  "safetyImplications": [
+    "ERROR and TARGET_LOST states must announce uncertainty, never guess."
+  ],
+  "accessibilityImplications": [
+    "Every state transition with user impact is announced in simple language."
+  ],
+  "privacyImplications": [
+    "Session state is ephemeral."
+  ],
+  "verificationRequirements": [
+    "State-transition unit tests and scenario tests."
+  ],
+  "decisionLog": [],
+  "tags": [
+    "mvp",
+    "guidance",
+    "state-machine"
+  ],
+  "createdAt": "2026-10-01T00:00:00Z",
+  "updatedAt": "2026-10-01T12:00:00Z"
+}
